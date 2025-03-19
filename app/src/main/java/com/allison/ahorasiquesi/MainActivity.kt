@@ -21,6 +21,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.allison.ahorasiquesi.ui.theme.AhoraSiQueSiTheme
 import com.allison.ahorasiquesi.ui.theme.SecondScreen
+import com.allison.ahorasiquesi.ui.theme.ThirdScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +40,13 @@ fun AppNavigation() {
 
     NavHost(navController = navController, startDestination = "main") {
         composable("main") { MainScreen(navController) }
-        composable("second") { SecondScreen { navController.popBackStack() } }
+        composable("second") { SecondScreen(navController) } // We pass the navController to SecondScreen
+        composable("third/{userName}") { backStackEntry ->
+            val userName = backStackEntry.arguments?.getString("userName")
+            if (userName != null) {
+                ThirdScreen(userName = userName)
+            }
+        }
     }
 }
 
@@ -111,9 +118,9 @@ fun MainScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // BOTÓN
+            // BOTÓN para navegar a la segunda pantalla
             Button(
-                onClick = { navController.navigate("second") },
+                onClick = { navController.navigate("second") }, // Navega a la segunda pantalla
                 modifier = Modifier
                     .width(200.dp)  // Ajusta el tamaño del botón (ancho)
                     .height(60.dp), // Ajusta el tamaño del botón (alto)

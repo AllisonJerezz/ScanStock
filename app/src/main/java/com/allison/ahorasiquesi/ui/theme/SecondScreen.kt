@@ -1,5 +1,5 @@
+// SecondScreen.kt
 package com.allison.ahorasiquesi.ui.theme
-
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,17 +24,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.allison.ahorasiquesi.MainScreen
 import com.allison.ahorasiquesi.R
 
 
-val LexendaFontFamily = FontFamily(
-    Font(R.font.lexendexa_variablefont))
+val LexendexaFontFamily: FontFamily
+    get() = FontFamily(
+        Font(R.font.lexendexa_variablefont))
 
 @Composable
-fun SecondScreen(onBack: () -> Unit) {}
-
-@Composable
-fun MainScreen(navController: NavHostController) {
+fun SecondScreen(navController: NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxSize() // Ocupa toda la pantalla
@@ -72,7 +73,7 @@ fun MainScreen(navController: NavHostController) {
                 Text(
                     text = "Inicia sesión",
                     fontSize = 28.sp,
-                    fontFamily = LexendaFontFamily,
+                    fontFamily = LexendexaFontFamily,
                     color = Color.Black,
                     modifier = Modifier.padding(bottom = 20.dp)
                 )
@@ -104,22 +105,24 @@ fun MainScreen(navController: NavHostController) {
                 )
                 Spacer(modifier = Modifier.height(20.dp)) // Espacio entre campos y el botón
 
-                // Botón "Iniciar sesión"
+                // Botón "Iniciar sesión" para navegar a la tercera pantalla
                 Button(
-                    onClick = { navController.navigate("third") }, // Redirige a la tercera pantalla
+                    onClick = {
+                        val userName = "Allison" // El nombre del usuario
+                        navController.navigate("third/$userName") // Navega a la tercera pantalla
+                    },
                     modifier = Modifier
-                        .width(200.dp)  // Ajusta el tamaño del botón (ancho)
-                        .height(60.dp), // Ajusta el tamaño del botón (alto)
-
+                        .width(200.dp)
+                        .height(60.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFCE93D8) // Color personalizado para el fondo del botón
+                        containerColor = Color(0xFFCE93D8)
                     )
                 ) {
                     Text(
                         text = "Continuar",
-                        fontSize = 14.sp, // Tamaño de la fuente
-                        fontFamily = LexendaFontFamily, // Usando la fuente personalizada
-                        color = Color.Black // Color del texto
+                        fontSize = 14.sp,
+                        fontFamily = LexendexaFontFamily,
+                        color = Color.Black
                     )
                 }
             }
@@ -129,8 +132,8 @@ fun MainScreen(navController: NavHostController) {
 
 @Composable
 fun ThirdScreen() {
-    // Aquí va el contenido de tu tercera pantalla
-    Text("¡Bienvenido a la tercera pantalla!", fontSize = 30.sp, color = Color.Black)
+    // Here goes the content of your third screen
+    Text("¡Welcome to the third screen!", fontSize = 30.sp, color = Color.Black)
 }
 
 @Composable
@@ -139,13 +142,17 @@ fun AppNavigation() {
 
     NavHost(navController = navController, startDestination = "main") {
         composable("main") { MainScreen(navController) }
-        composable("third") { ThirdScreen() } // Pantalla para después del login
+        composable("second") { SecondScreen(navController) } // We pass the navController to SecondScreen
+        composable("third/{userName}") { backStackEntry ->
+            val userName = backStackEntry.arguments?.getString("userName")
+            ThirdScreen()
+        }
     }
 }
 
-// 🔍 PREVIEW para Design View
+// 🔍 PREVIEW for Design View
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun MainScreenPreview() {
-    MainScreen(navController = rememberNavController())
+fun SecondScreenPreview() {
+    SecondScreen(navController = rememberNavController())
 }
